@@ -1,4 +1,3 @@
-
 # VectorLiteDB
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -7,15 +6,16 @@
 [![Website](https://img.shields.io/badge/Website-vectorlite.tech-blue)](https://vectorlite.tech)
 [![Docs](https://img.shields.io/badge/Docs-docs-green)](https://docs.vectorlite.tech)
 
-**VectorLiteDB is SQLite for vector search.**  
-Built for AI apps that run on-device — no servers, no setup, just a single `.db` file.
+**VectorLiteDB is SQLite for vector search — a fast, embeddable vector database for on-device AI.**  
+No servers. No setup. Just a single `.db` file for intelligent memory.
 
-Use VectorLiteDB when you want to:
-- Embed vector search directly into desktop, mobile, or edge apps  
-- Avoid external dependencies, cloud infra, or complex servers  
+Built for developers who need to:
+- Run private, local vector search with zero infrastructure  
+- Ship intelligent memory into desktop, mobile, or edge apps  
 - Store and query 10K–1M vectors with fast similarity search  
-- Power local RAG systems, personal AI agents, or offline copilots
+- Power offline copilots, local RAG systems, and personal AI agents
 
+---
 ## Install
 
 ```bash
