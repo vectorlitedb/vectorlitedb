@@ -40,14 +40,20 @@ for r in results:
 
 ## Documentation
 
-See full API docs, examples, and benchmarks at:  
-**https://docs.vectorlite.tech**
+Explore the full API reference, integration examples, and performance benchmarks at:  
+**[docs.vectorlite.tech](https://docs.vectorlite.tech)**
 
 ## Contributing
 
-We’re in early alpha and open to contributions.  
-To get started, read [CONTRIBUTING.md](CONTRIBUTING.md) or join our [GitHub Discussions](https://github.com/vectorlitedb/vectorlitedb/discussions).
+VectorLiteDB is in early alpha — and we’re actively looking for contributors.
+
+To get involved:
+
+- Review our [CONTRIBUTING.md](CONTRIBUTING.md) guide  
+- Browse open tasks in the [Project Roadmap](https://github.com/orgs/vectorlitedb/projects/1)  
+- Join the conversation on [GitHub Discussions](https://github.com/vectorlitedb/vectorlitedb/discussions)
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE)
+Licensed under the [Apache 2.0 License](LICENSE).
+
