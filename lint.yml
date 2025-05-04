@@ -1,0 +1,34 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ruff black isort mypy
+        pip install -e .
+    - name: Lint with ruff
+      run: |
+        ruff .
+    - name: Check formatting with black
+      run: |
+        black --check .
+    - name: Check imports with isort
+      run: |
+        isort --check .
+    - name: Type check with mypy
+      run: |
+        mypy src/vectorlitedb
