@@ -1,1 +1,0 @@
-# Search algorithms for VectorLiteDB
