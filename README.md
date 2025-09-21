@@ -6,6 +6,11 @@
 
 > **SQLite for Embeddings** — A simple, embedded vector database that stores everything in a single file.
 
+```python
+pip install vectorlitedb
+db = VectorLiteDB("my.db", 1536)  # Start building in 30 seconds
+```
+
 No server. No setup. Just vectors in a file.
 
 ## Why?
@@ -13,6 +18,25 @@ No server. No setup. Just vectors in a file.
 Every vector database is either a cloud service (Pinecone), needs a server (Chroma), or doesn't persist (FAISS). 
 
 Sometimes you just want to store embeddings in a file and search them. Like SQLite does for relational data.
+
+**Start local, scale when needed:**
+```python
+# Development with VectorLiteDB
+if ENV == "development":
+    from vectorlitedb import VectorLiteDB
+    db = VectorLiteDB("local.db", dimension=1536)
+
+# Production with Pinecone/Weaviate  
+elif ENV == "production":
+    import pinecone
+    db = pinecone.Index("my-index")
+
+# Same interface - zero code changes
+db.insert(id, vector, metadata)
+results = db.search(query, top_k=5)
+```
+
+Build your entire AI app locally, then swap to a cloud service when you actually need scale. No rewrites needed.
 
 ## Quick Start
 
@@ -109,21 +133,15 @@ This is v0.1.0 - a working alpha focused on simplicity over performance.
 - ✅ Metadata filtering
 - ✅ ~100ms search for 10K vectors
 
-**Planned:**
-- 🚧 Better search algorithms (IVF, HNSW)
-- 🚧 Memory-mapped files for large datasets
-- 🚧 Language bindings (JavaScript, Rust, Go)
 
 ## Contributing
 
-The codebase is intentionally small (~200 lines) and readable. 
-
-Perfect for:
+This is development mode - the codebase is small and readable.
 
 - First-time contributors
-- Algorithm implementations  
 - Performance optimizations
 - Documentation improvements
+- Feature requests
 
 See issues labeled [`good first issue`](https://github.com/vectorlitedb/vectorlitedb/labels/good%20first%20issue).
 
@@ -137,3 +155,7 @@ VectorLiteDB combines the best parts: embedded like SQLite, simple like a Python
 ## License
 
 VectorLiteDB is licensed under the [Apache 2.0 License](LICENSE).
+
+---
+
+Built with ❤️ for AI developers
