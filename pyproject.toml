@@ -41,6 +41,11 @@ dev = [
     "pre-commit>=3.0.0",
     "ruff>=0.0.270",
 ]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "numpy>=1.20.0",
+]
 docs = [
     "mkdocs>=1.4.0",
     "mkdocs-material>=9.0.0",
