@@ -1,7 +1,7 @@
 # VectorLiteDB
 
+[![PyPI version](https://badge.fury.io/py/vectorlitedb.svg)](https://badge.fury.io/py/vectorlitedb)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Status](https://img.shields.io/badge/Status-Alpha-orange)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
 > **SQLite for Embeddings** — A simple, embedded vector database that stores everything in a single file.
@@ -19,24 +19,19 @@ Every vector database is either a cloud service (Pinecone), needs a server (Chro
 
 Sometimes you just want to store embeddings in a file and search them. Like SQLite does for relational data.
 
-**Start local, scale when needed:**
+**Start small, swap later:**
 ```python
-# Development with VectorLiteDB
-if ENV == "development":
-    from vectorlitedb import VectorLiteDB
-    db = VectorLiteDB("local.db", dimension=1536)
+# Local dev
+db = VectorLiteDB("local.db", 1536)
 
-# Production with Pinecone/Weaviate  
-elif ENV == "production":
-    import pinecone
-    db = pinecone.Index("my-index")
+# Swap to Pinecone in prod  
+db = pinecone.Index("my-index")
 
-# Same interface - zero code changes
-db.insert(id, vector, metadata)
+# Same interface works for both
 results = db.search(query, top_k=5)
 ```
 
-Build your entire AI app locally, then swap to a cloud service when you actually need scale. No rewrites needed.
+Build your entire AI app locally, then swap to a cloud service when you actually need scale.
 
 ## Quick Start
 
