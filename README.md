@@ -3,6 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/vectorlitedb.svg)](https://badge.fury.io/py/vectorlitedb)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Build](https://github.com/vectorlitedb/vectorlitedb/actions/workflows/build.yml/badge.svg)](https://github.com/vectorlitedb/vectorlitedb/actions/workflows/build.yml)
+[![Tests](https://github.com/vectorlitedb/vectorlitedb/actions/workflows/test.yml/badge.svg)](https://github.com/vectorlitedb/vectorlitedb/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
