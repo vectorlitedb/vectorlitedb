@@ -28,6 +28,12 @@ class VectorLiteDB:
             distance_metric: One of "cosine", "l2", or "dot"
         """
         self.db_path = db_path
+        self._read_only = False  # Track if database is read-only
+        
+        # Validate distance metric
+        valid_metrics = {"cosine", "l2", "dot"}
+        if distance_metric not in valid_metrics:
+            raise ValueError(f"Invalid distance_metric: {distance_metric}. Must be one of {valid_metrics}")
         self.distance_metric = distance_metric
         
         # In-memory storage
@@ -37,9 +43,19 @@ class VectorLiteDB:
         # Load existing or create new
         if os.path.exists(db_path) and os.path.getsize(db_path) > 0:
             self._load()
+            # Check if file is writable
+            if not os.access(db_path, os.W_OK):
+                self._read_only = True
         else:
             if dimension is None:
                 raise ValueError("Dimension required for new database")
+            
+            # Validate dimension type and value
+            if not isinstance(dimension, int):
+                raise TypeError(f"Dimension must be an integer, got {type(dimension).__name__}")
+            if dimension < 0:
+                raise ValueError(f"Dimension must be non-negative, got {dimension}")
+            
             self.dimension = dimension
             self._save()
     
@@ -52,6 +68,9 @@ class VectorLiteDB:
             vector: Embedding vector
             metadata: Optional metadata dictionary
         """
+        if self._read_only:
+            raise PermissionError("Cannot insert into read-only database")
+            
         # Validate
         if id in self.vectors:
             raise ValueError(f"ID already exists: {id}")
@@ -121,6 +140,9 @@ class VectorLiteDB:
         Args:
             id: Vector ID to delete
         """
+        if self._read_only:
+            raise PermissionError("Cannot delete from read-only database")
+            
         if id not in self.vectors:
             raise KeyError(f"ID not found: {id}")
         
@@ -146,17 +168,23 @@ class VectorLiteDB:
     
     def close(self) -> None:
         """Save and close the database."""
-        self._save()
+        if not self._read_only:
+            self._save()
     
     # ============== Internal Methods ==============
     
     def _calculate_distance(self, v1: List[float], v2: List[float]) -> float:
         """Calculate distance between two vectors."""
-        v1_array = np.array(v1, dtype=np.float32)
-        v2_array = np.array(v2, dtype=np.float32)
+        v1_array = np.array(v1, dtype=np.float64)  # Use float64 for better precision
+        v2_array = np.array(v2, dtype=np.float64)
+        
+        # Check for NaN or Inf values
+        if np.any(np.isnan(v1_array)) or np.any(np.isnan(v2_array)):
+            return float('inf')  # Return infinite distance for NaN vectors
         
         if self.distance_metric == "l2":
-            return float(np.linalg.norm(v1_array - v2_array))
+            distance = float(np.linalg.norm(v1_array - v2_array))
+            return distance if np.isfinite(distance) else float('inf')
         
         elif self.distance_metric == "cosine":
             # Cosine distance = 1 - cosine similarity
@@ -164,12 +192,22 @@ class VectorLiteDB:
             norm2 = np.linalg.norm(v2_array)
             if norm1 == 0 or norm2 == 0:
                 return 1.0
+            
+            # Handle overflow/underflow
+            if np.isinf(norm1) or np.isinf(norm2):
+                return float('inf')
+                
             similarity = np.dot(v1_array, v2_array) / (norm1 * norm2)
-            return float(1 - similarity)
+            
+            # Clamp similarity to [-1, 1] to handle numerical errors
+            similarity = np.clip(similarity, -1.0, 1.0)
+            distance = float(1 - similarity)
+            return distance if np.isfinite(distance) else float('inf')
         
         elif self.distance_metric == "dot":
             # Negative dot product (higher dot = more similar = lower distance)
-            return float(-np.dot(v1_array, v2_array))
+            dot_product = np.dot(v1_array, v2_array)
+            return float(-dot_product) if np.isfinite(dot_product) else float('inf')
         
         else:
             raise ValueError(f"Unknown distance metric: {self.distance_metric}")

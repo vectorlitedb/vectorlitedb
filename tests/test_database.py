@@ -41,15 +41,9 @@ class TestDatabaseCreation:
     
     def test_invalid_distance_metric_fails(self, temp_db_path):
         """Test that invalid distance metric raises appropriate error"""
-        # This test expects the validation to be added to the code
-        db = VectorLiteDB(temp_db_path, dimension=10, distance_metric="invalid")
-        
-        # Should fail when trying to use invalid metric in search
-        db.insert("test", [1.0] * 10)
-        with pytest.raises(ValueError, match="Unknown distance metric"):
-            db.search([1.0] * 10)
-        
-        db.close()
+        # Should fail at initialization with invalid metric
+        with pytest.raises(ValueError, match="Invalid distance_metric"):
+            VectorLiteDB(temp_db_path, dimension=10, distance_metric="invalid")
 
 
 class TestDatabaseLoading:

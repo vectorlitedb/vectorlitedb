@@ -12,8 +12,10 @@ from vectorlitedb import VectorLiteDB
 @pytest.fixture
 def temp_db_path():
     """Create a temporary database file path"""
-    with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
-        db_path = f.name
+    # Generate a path without creating the file
+    fd, db_path = tempfile.mkstemp(suffix='.db')
+    os.close(fd)
+    os.unlink(db_path)  # Remove the file but keep the path
     
     yield db_path
     
