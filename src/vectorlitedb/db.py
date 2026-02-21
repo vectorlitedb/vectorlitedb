@@ -232,26 +232,42 @@ class VectorLiteDB:
             raise ValueError(f"Unknown distance metric: {self.distance_metric}")
 
     def _save(self) -> None:
-        """Save database to file."""
+        """Save database to file atomically to prevent corruption."""
         os.makedirs(os.path.dirname(os.path.abspath(self.db_path)), exist_ok=True)
 
-        with open(self.db_path, "wb") as f:
-            # Write header
-            header = {
-                "magic": "VLDB",
-                "version": 1,
-                "dimension": self.dimension,
-                "distance_metric": self.distance_metric,
-                "count": len(self.vectors),
-            }
-            header_json = json.dumps(header).encode("utf-8")
-            f.write(struct.pack("I", len(header_json)))
-            f.write(header_json)
+        # Write to a temporary file first, then atomically replace.
+        # This prevents data loss if the process crashes mid-write.
+        temp_path = self.db_path + ".tmp"
+        try:
+            with open(temp_path, "wb") as f:
+                # Write header
+                header = {
+                    "magic": "VLDB",
+                    "version": 1,
+                    "dimension": self.dimension,
+                    "distance_metric": self.distance_metric,
+                    "count": len(self.vectors),
+                }
+                header_json = json.dumps(header).encode("utf-8")
+                f.write(struct.pack("I", len(header_json)))
+                f.write(header_json)
 
-            # Write vectors and metadata
-            data = {"vectors": self.vectors, "metadata": self.metadata}
-            data_json = json.dumps(data).encode("utf-8")
-            f.write(data_json)
+                # Write vectors and metadata
+                data = {"vectors": self.vectors, "metadata": self.metadata}
+                data_json = json.dumps(data).encode("utf-8")
+                f.write(data_json)
+
+                # Flush to OS and sync to disk
+                f.flush()
+                os.fsync(f.fileno())
+
+            # Atomically replace the old file with the new one
+            os.replace(temp_path, self.db_path)
+        except BaseException:
+            # Clean up temp file on any failure
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+            raise
 
     def _load(self) -> None:
         """Load database from file."""
