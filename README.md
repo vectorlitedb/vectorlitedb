@@ -6,6 +6,8 @@
 [![Tests](https://github.com/vectorlitedb/vectorlitedb/actions/workflows/test.yml/badge.svg)](https://github.com/vectorlitedb/vectorlitedb/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+<img width="2752" height="1536" alt="vectorlitedb_banner" src="https://github.com/user-attachments/assets/58a28a6b-f086-4fae-8135-d964356cf97e" />
+
 
 > **SQLite for Embeddings** — A simple, embedded vector database that stores everything in a single file.
 
