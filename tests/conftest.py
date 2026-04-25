@@ -4,8 +4,10 @@ Shared pytest fixtures for VectorLiteDB tests
 
 import os
 import tempfile
-import pytest
+
 import numpy as np
+import pytest
+
 from vectorlitedb import VectorLiteDB
 
 
@@ -20,8 +22,9 @@ def temp_db_path():
     yield db_path
     
     # Cleanup
-    if os.path.exists(db_path):
-        os.remove(db_path)
+    for path in [db_path, db_path + ".wal", db_path + ".tmp"]:
+        if os.path.exists(path):
+            os.remove(path)
 
 
 @pytest.fixture

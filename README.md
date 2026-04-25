@@ -72,6 +72,19 @@ Your vectors are saved in `my_vectors.db`.
 - **Filters** results by metadata
 - **Works offline** - no internet required
 
+## Persistence Model
+
+VectorLiteDB keeps the main database in `my_vectors.db` and uses a sidecar write-ahead
+log at `my_vectors.db.wal` while writes are in flight.
+
+- `insert()` and `delete()` append a durable WAL record immediately
+- opening a database replays any WAL records on top of the last snapshot
+- `close()` checkpoints the in-memory state back into the main DB file and clears the WAL
+- long-running write sessions checkpoint periodically to keep the WAL from growing forever
+
+This keeps normal writes cheap while preserving crash recovery and single-file snapshot
+compatibility for the main database format.
+
 ## What This Doesn't Do (Yet)
 
 - ❌ Generate embeddings (use OpenAI, etc.)
